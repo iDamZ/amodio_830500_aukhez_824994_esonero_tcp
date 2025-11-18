@@ -47,6 +47,7 @@ int main(int argc, char *argv[]) {
 #endif
 
 	int my_socket;
+	printf("ciao damianooo");
 
 	// TODO: Create socket
 	// my_socket = socket(...);
