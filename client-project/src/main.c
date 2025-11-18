@@ -21,6 +21,7 @@
 #endif
 
 #include <stdio.h>
+#include <errno.h>
 #include <stdlib.h>
 #define BUFFERSIZE 512
 #include "protocol.h"
@@ -53,7 +54,7 @@ int main(int argc, char *argv[]) {
 	// TODO: Create socket
 	my_socket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (my_socket < 0) {
-	errorhandler("socket creation failed.\n");
+	perror("socket creation failed.\n");
 	closesocket(my_socket);
 	clearwinsock();
 	return -1;
@@ -74,7 +75,7 @@ int main(int argc, char *argv[]) {
 
 	if (connect(my_socket, (struct sockaddr *)&sad, sizeof(sad))< 0)
 	{
-	errorhandler( "Failed to connect.\n" );
+	perror( "Failed to connect.\n" );
 	closesocket(my_socket);
 	clearwinsock();
 	return -1;
@@ -88,7 +89,7 @@ int main(int argc, char *argv[]) {
 	char* input_string = "prova"; // Stringa da inviare
 	int string_len = strlen(input_string); // Determina la lunghezza
 	if (send(my_socket, input_string, string_len, 0) != string_len) {
-	errorhandler("send() sent a different number of bytes than expected");
+	perror("send() sent a different number of bytes than expected");
 	closesocket(my_socket);
 	clearwinsock();
 	return -1;
@@ -103,7 +104,7 @@ int main(int argc, char *argv[]) {
 	while (total_bytes_rcvd < string_len) {
 	if ((bytes_rcvd = recv(my_socket, buf, BUFFERSIZE - 1, 0)) <= 0)
 	{
-	errorhandler("recv() failed or connection closed prematurely");
+	perror("recv() failed or connection closed prematurely");
 	closesocket(my_socket);
 	clearwinsock();
 	return -1;
@@ -121,5 +122,3 @@ int main(int argc, char *argv[]) {
 	system("pause");
 	return(0);
 	}
-
-} // main end
