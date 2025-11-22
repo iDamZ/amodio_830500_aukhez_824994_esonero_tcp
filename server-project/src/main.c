@@ -51,7 +51,16 @@ float get_pressure(void) {
 
 
 int main(int argc, char *argv[]) {
+	char *server_ip = SERVER_IP;
+		   int port = SERVER_PORT;
 
+		   for (int i = 1; i < argc; i++) {
+		   	        if (strcmp(argv[i], "-s") == 0 && (i + 1) < argc) {
+		   	            server_ip = argv[++i];
+		   	        } else if (strcmp(argv[i], "-p") == 0 && (i + 1) < argc) {
+		   	            port = atoi(argv[++i]);
+		   	        }
+		   }
 #if defined WIN32
     WSADATA wsa_data;
     int result = WSAStartup(MAKEWORD(2,2), &wsa_data);
@@ -75,11 +84,12 @@ int main(int argc, char *argv[]) {
 
     //  Configurazione indirizzo server
 
+
     struct sockaddr_in sad;
-    memset(&sad, 0, sizeof(sad));
-    sad.sin_family = AF_INET;
-    sad.sin_addr.s_addr = inet_addr("127.0.0.1");
-    sad.sin_port = htons(SERVER_PORT);
+    	memset(&sad, 0, sizeof(sad));
+    	sad.sin_family = AF_INET;
+    	sad.sin_addr.s_addr = inet_addr(server_ip);
+    	sad.sin_port = htons(port);
 
     //  Bind socket
     if (bind(my_socket, (struct sockaddr*)&sad, sizeof(sad)) < 0) {

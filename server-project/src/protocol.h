@@ -13,6 +13,7 @@ typedef struct {
     float value;
 } weather_response_t;
 
+#define SERVER_IP "127.0.0.1"
 
 #define SERVER_PORT 56700
 #define QLEN 6
