@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
 	    }
 
 	        // Esempio: "t bari" -> type='t', city="bari"
-	        richiesta_client req;
+	    weather_request_t req;
 	        memset(&req, 0, sizeof(req));
 	        req.type = input_string[0];
 	        if (strlen(input_string) > 1) {
@@ -133,13 +133,23 @@ int main(int argc, char *argv[]) {
 	int bytes_rcvd;
 	int total_bytes_rcvd = 0;
 	printf("Received: "); // Setup to print the echoed string
-	risposta_server resp;
+	weather_response_t resp;
 	while (total_bytes_rcvd < sizeof(resp)) {
-
 	        bytes_rcvd = recv(my_socket, (char *)&resp + total_bytes_rcvd, sizeof(resp) - total_bytes_rcvd, 0);
 
-	        if (bytes_rcvd <= 0) {
-	            perror("Receive failed o connessione chiusa prematuramente");
+	        if (bytes_rcvd == 0) {
+	            // Connessione chiusa dal server
+	            if (total_bytes_rcvd < sizeof(resp)) {
+	                 perror("Connessione chiusa prematuramente");
+	                 closesocket(my_socket);
+	                 clearwinsock();
+	                 return -1;
+	            } else {
+	                 break;
+	            }
+	        }
+	        else if (bytes_rcvd < 0) {
+	            perror("Receive failed");
 	            closesocket(my_socket);
 	            clearwinsock();
 	            return -1;
@@ -147,7 +157,6 @@ int main(int argc, char *argv[]) {
 
 	        total_bytes_rcvd += bytes_rcvd;
 	    }
-
 	//Stampa Formattata
 	if (resp.status == 0) {
 		printf("Ricevuto risultato dal server ip %s. ", server_ip);

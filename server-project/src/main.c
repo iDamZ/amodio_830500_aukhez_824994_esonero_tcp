@@ -151,7 +151,7 @@ int main(int argc, char *argv[]) {
 
         // 6) Gestione della richiesta
 
-        richiesta_client req;
+        weather_request_t req;
         int bytes = recv(client_socket, (char *)&req, sizeof(req), 0);
 
         if (bytes <= 0) {
@@ -160,7 +160,7 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        risposta_server res;
+        weather_response_t res;
         res.status = 0; // default = success
         res.type = req.type;
         res.value = 0.0f;

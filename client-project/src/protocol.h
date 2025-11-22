@@ -14,14 +14,14 @@
 typedef struct {
     char type;        // 't', 'h', 'w', 'p'
     char city[64];    // Nome città (stringa null-terminated)
-} richiesta_client;
+} weather_request_t;
 
 // Messaggio di Risposta (Server -> Client)
 typedef struct {
     unsigned int status;  // 0=Ok, 1=No City, 2=Invalid
     char type;            // Eco del tipo
     float value;          // Valore numerico
-} risposta_server;
+} weather_response_t;
 
 // Shared application parameters
 #define SERVER_PORT 56700  // Server port (change if needed)
