@@ -158,8 +158,9 @@ int main(int argc, char *argv[]) {
 	        total_bytes_rcvd += bytes_rcvd;
 	    }
 	//Stampa Formattata
+	printf("Ricevuto risultato dal server ip %s. ", server_ip);
 	if (resp.status == 0) {
-		printf("Ricevuto risultato dal server ip %s. ", server_ip);
+
 	        switch (req.type) {
 	            case 't':
 	                printf("%s: Temperatura = %.1f°C\n", req.city, resp.value);
@@ -190,7 +191,5 @@ int main(int argc, char *argv[]) {
 	// closesocket(my_socket);
 	closesocket(my_socket);
 	clearwinsock();
-	printf("\n"); // Print a final linefeed
-	system("pause");
 	return(0);
 	}
