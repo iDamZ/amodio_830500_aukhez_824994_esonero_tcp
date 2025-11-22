@@ -1,23 +1,26 @@
-/*
- * protocol.h
- *
- * Server header file
- * Definitions, constants and function prototypes for the server
- */
+#ifndef PROTOCOL_H
+#define PROTOCOL_H
 
-#ifndef PROTOCOL_H_
-#define PROTOCOL_H_
 
-// Shared application parameters
-#define SERVER_PORT 27015  // Server port (change if needed)
-#define BUFFER_SIZE 512    // Buffer size for messages
+typedef struct {
+    char type;
+    char city[64];
+} weather_request_t;
+
+typedef struct {
+    unsigned int status;
+    char type;
+    float value;
+} weather_response_t;
+
+
+#define SERVER_PORT 56700
 #define QLEN 6
-// Function prototypes
-// Add here the signatures of the functions implemented by students
 
-/*
- * Example function to implement:
- * int handle_client(int client_socket);
- */
 
-#endif /* PROTOCOL_H_ */
+float get_temperature(void);
+float get_humidity(void);
+float get_wind(void);
+float get_pressure(void);
+
+#endif
