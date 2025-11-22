@@ -132,7 +132,6 @@ int main(int argc, char *argv[]) {
 
 	int bytes_rcvd;
 	int total_bytes_rcvd = 0;
-	printf("Received: "); // Setup to print the echoed string
 	weather_response_t resp;
 	while (total_bytes_rcvd < sizeof(resp)) {
 	        bytes_rcvd = recv(my_socket, (char *)&resp + total_bytes_rcvd, sizeof(resp) - total_bytes_rcvd, 0);
