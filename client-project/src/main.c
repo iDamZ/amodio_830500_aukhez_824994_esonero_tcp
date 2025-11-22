@@ -160,6 +160,7 @@ int main(int argc, char *argv[]) {
 	total_bytes_rcvd += bytes_rcvd; // Keep tally of total bytes
 	}
 
+	//Stampa Formattata
 	if (resp.status == 0) {
 		printf("Ricevuto risultato dal server ip %s. ", server_ip);
 	        switch (req.type) {
