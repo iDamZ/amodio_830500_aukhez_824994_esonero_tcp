@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
-#define BUFFERSIZE 512
 #include "protocol.h"
 
 #define NO_ERROR 0
@@ -53,8 +52,8 @@ int main(int argc, char *argv[]) {
 
 	// TODO: Implement client logic
 
-	char *server_ip = "127.0.0.1";
-	   int port = 56700;
+	char *server_ip = SERVER_IP;
+	   int port = SERVER_PORT;
 	char* input_string = NULL; // Stringa da inviare
 
 	for (int i = 1; i < argc; i++) {
