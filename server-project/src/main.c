@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <time.h>
+#include <ctype.h>
+
 
 #include "protocol.h"
 
