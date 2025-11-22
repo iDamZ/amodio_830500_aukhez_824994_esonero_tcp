@@ -55,6 +55,20 @@ int is_city_valid(const char *city) {
     }
     return 0;
 }
+void format_city_name(char *city) {
+    // Controllo di sicurezza per stringhe nulle o vuote
+    if (city == NULL || city[0] == '\0') {
+        return;
+    }
+
+    // 1. Trasforma la prima lettera in Maiuscolo
+    city[0] = toupper((unsigned char)city[0]);
+
+    // 2. Trasforma tutte le lettere successive in minuscolo
+    for (int i = 1; city[i] != '\0'; i++) {
+        city[i] = tolower((unsigned char)city[i]);
+    }
+}
 
 float get_temperature(void) {
     return -10.0f + (float)rand() / RAND_MAX * (40.0f - (-10.0f));
@@ -180,6 +194,7 @@ int main(int argc, char *argv[]) {
                     res.type = '\0'; // Come da specifica errori
                 }
                 else {
+                	format_city_name(req.city);
                     // Tipo valido E Città valida -> genera valore
                     switch (req.type) {
                         case 't': res.value = get_temperature(); break;

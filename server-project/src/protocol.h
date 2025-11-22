@@ -31,6 +31,7 @@ const int NUM_CITIES = 10;
 
 int are_strings_equal_case_insensitive(const char *s1, const char *s2);
 int is_city_valid(const char *city);
+void format_city_name(char *city);
 float get_temperature(void);
 float get_humidity(void);
 float get_wind(void);
