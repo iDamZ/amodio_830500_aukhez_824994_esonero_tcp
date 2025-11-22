@@ -26,12 +26,33 @@
 
 #define NO_ERROR 0
 
+
+
 void clearwinsock() {
 #if defined WIN32
     WSACleanup();
 #endif
 }
 
+int are_strings_equal_case_insensitive(const char *s1, const char *s2) {
+    while (*s1 && *s2) {
+        if (tolower((unsigned char)*s1) != tolower((unsigned char)*s2)) {
+            return 0;
+        }
+        s1++;
+        s2++;
+    }
+    return (*s1 == '\0' && *s2 == '\0');
+}
+
+int is_city_valid(const char *city) {
+    for (int i = 0; i < NUM_CITIES; i++) {
+        if (are_strings_equal_case_insensitive(city, VALID_CITIES[i])) {
+            return 1;
+        }
+    }
+    return 0;
+}
 
 float get_temperature(void) {
     return -10.0f + (float)rand() / RAND_MAX * (40.0f - (-10.0f));
@@ -130,8 +151,8 @@ int main(int argc, char *argv[]) {
 
         // 6) Gestione della richiesta
 
-        weather_request_t req;
-        int bytes = recv(client_socket, &req, sizeof(req), 0);
+        richiesta_client req;
+        int bytes = recv(client_socket, (char *)&req, sizeof(req), 0);
 
         if (bytes <= 0) {
             printf("Invalid request or connection closed.\n");
@@ -139,32 +160,35 @@ int main(int argc, char *argv[]) {
             continue;
         }
 
-        weather_response_t res;
+        risposta_server res;
         res.status = 0; // default = success
         res.type = req.type;
+        res.value = 0.0f;
 
         // Validazione tipo richiesto
         if (req.type != 't' && req.type != 'h' &&
-            req.type != 'w' && req.type != 'p') {
+                    req.type != 'w' && req.type != 'p') {
 
-            res.status = 2; // richiesta non valida
-            res.value = 0;
-        }
-        else if (strlen(req.city) == 0) {
-            res.status = 1; // città non disponibile
-        }
-        else {
-            // Tipo valido → genera valore
-            switch (req.type) {
-                case 't': res.value = get_temperature(); break;
-                case 'h': res.value = get_humidity();    break;
-                case 'w': res.value = get_wind();        break;
-                case 'p': res.value = get_pressure();    break;
-            }
-        }
+                    res.status = 2; // richiesta non valida (tipo errato)
+                    res.type = '\0'; // Come da specifica errori
+                }
+                // 2. Validazione Città (Vuota o Non in lista)
+                else if (strlen(req.city) == 0 || !is_city_valid(req.city)) {
+                    res.status = 1; // città non disponibile
+                    res.type = '\0'; // Come da specifica errori
+                }
+                else {
+                    // Tipo valido E Città valida -> genera valore
+                    switch (req.type) {
+                        case 't': res.value = get_temperature(); break;
+                        case 'h': res.value = get_humidity();    break;
+                        case 'w': res.value = get_wind();        break;
+                        case 'p': res.value = get_pressure();    break;
+                    }
+                }
 
         //  Invio risposta
-        send(client_socket, &res, sizeof(res), 0);
+        send(client_socket, (char *)&res, sizeof(res), 0);
 
         printf("Request served. Closing connection.\n");
         closesocket(client_socket);

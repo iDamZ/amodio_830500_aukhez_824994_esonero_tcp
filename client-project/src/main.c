@@ -27,20 +27,6 @@
 
 #define NO_ERROR 0
 
-/* --- DEFINIZIONE STRUTTURE (PROTOCOLLO) --- */
-
-// Messaggio di Richiesta (Client -> Server)
-typedef struct {
-    char type;        // 't', 'h', 'w', 'p'
-    char city[64];    // Nome città (stringa null-terminated)
-} richiesta_client;
-
-// Messaggio di Risposta (Server -> Client)
-typedef struct {
-    unsigned int status;  // 0=Ok, 1=No City, 2=Invalid
-    char type;            // Eco del tipo
-    float value;          // Valore numerico
-} risposta_server;
 
 void clearwinsock() {
 #if defined WIN32
@@ -136,9 +122,9 @@ int main(int argc, char *argv[]) {
 	// send(...);
 	// recv(...);
 
-	if (send(my_socket, &req, sizeof(req), 0) < 0) {
+	if (send(my_socket, (char *)&req, sizeof(req), 0) < 0) {
 	        perror("Send failed");
-	        close(my_socket);
+	        closesocket(my_socket);
 	        return -1;
 	    }
 
@@ -148,16 +134,19 @@ int main(int argc, char *argv[]) {
 	int total_bytes_rcvd = 0;
 	printf("Received: "); // Setup to print the echoed string
 	risposta_server resp;
-	while (total_bytes_rcvd < sizeof(req)) {
-	if ((bytes_rcvd = recv(my_socket, &resp, sizeof(resp), 0)) <= 0)
-	{
-	perror("Receive failed");
-	closesocket(my_socket);
-	clearwinsock();
-	return -1;
-	}
-	total_bytes_rcvd += bytes_rcvd; // Keep tally of total bytes
-	}
+	while (total_bytes_rcvd < sizeof(resp)) {
+
+	        bytes_rcvd = recv(my_socket, (char *)&resp + total_bytes_rcvd, sizeof(resp) - total_bytes_rcvd, 0);
+
+	        if (bytes_rcvd <= 0) {
+	            perror("Receive failed o connessione chiusa prematuramente");
+	            closesocket(my_socket);
+	            clearwinsock();
+	            return -1;
+	        }
+
+	        total_bytes_rcvd += bytes_rcvd;
+	    }
 
 	//Stampa Formattata
 	if (resp.status == 0) {

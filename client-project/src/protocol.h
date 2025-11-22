@@ -8,6 +8,21 @@
 #ifndef PROTOCOL_H_
 #define PROTOCOL_H_
 
+/* --- DEFINIZIONE STRUTTURE (PROTOCOLLO) --- */
+
+// Messaggio di Richiesta (Client -> Server)
+typedef struct {
+    char type;        // 't', 'h', 'w', 'p'
+    char city[64];    // Nome città (stringa null-terminated)
+} richiesta_client;
+
+// Messaggio di Risposta (Server -> Client)
+typedef struct {
+    unsigned int status;  // 0=Ok, 1=No City, 2=Invalid
+    char type;            // Eco del tipo
+    float value;          // Valore numerico
+} risposta_server;
+
 // Shared application parameters
 #define SERVER_PORT 56700  // Server port (change if needed)
 #define SERVER_IP "127.0.0.1"  // Server port (change if needed)
