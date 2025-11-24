@@ -133,12 +133,12 @@ int main(int argc, char *argv[]) {
 	int bytes_rcvd;
 	int total_bytes_rcvd = 0;
 	weather_response_t resp;
-	while (total_bytes_rcvd < sizeof(resp)) {
-	        bytes_rcvd = recv(my_socket, (char *)&resp + total_bytes_rcvd, sizeof(resp) - total_bytes_rcvd, 0);
+	while (total_bytes_rcvd < (int)sizeof(resp)) {
+	        bytes_rcvd = recv(my_socket, (char *)&resp + total_bytes_rcvd, (int)sizeof(resp) - total_bytes_rcvd, 0);
 
 	        if (bytes_rcvd == 0) {
 	            // Connessione chiusa dal server
-	            if (total_bytes_rcvd < sizeof(resp)) {
+	            if (total_bytes_rcvd < (int)sizeof(resp)) {
 	                 perror("Connessione chiusa prematuramente");
 	                 closesocket(my_socket);
 	                 clearwinsock();

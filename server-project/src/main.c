@@ -28,7 +28,11 @@
 
 #define NO_ERROR 0
 
-
+#if defined WIN32
+    typedef int socklen_t_w;
+#else
+    typedef socklen_t socklen_t_w;
+#endif
 
 void clearwinsock() {
 #if defined WIN32
@@ -150,7 +154,7 @@ int main(int argc, char *argv[]) {
 
     struct sockaddr_in cad;
     int client_socket;
-    int client_len;
+    socklen_t_w client_len;
 
     while (1) {
         printf("Waiting for a client...\n");
